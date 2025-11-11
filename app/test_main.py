@@ -3,8 +3,9 @@ from unittest import mock
 import pytest
 import datetime
 
+
 @pytest.fixture(scope="function")
-def created_products():
+def created_products() -> list:
     return [
         {
             "name": "salmon",
@@ -23,20 +24,29 @@ def created_products():
         }
     ]
 
+
 @pytest.fixture(scope="function")
-def mocked_datetime():
+def mocked_datetime() -> mock:
     with mock.patch("app.main.datetime") as mock_date:
         yield mock_date
 
-def test_should_return_product_names(mocked_datetime, created_products):
-    mocked_datetime.date.today.return_value = datetime.date.today()
-    assert outdated_products(created_products) == ['salmon', 'chicken', 'duck']
 
-def test_should_return_empty_list_if_products_are_not_expired(mocked_datetime, created_products):
+def test_should_return_product_names(
+        mocked_datetime: mock,
+        created_products: mock) -> None:
+    mocked_datetime.date.today.return_value = datetime.date.today()
+    assert outdated_products(created_products) == ["salmon", "chicken", "duck"]
+
+
+def test_should_return_empty_list_if_products_are_not_expired(
+        mocked_datetime: mock,
+        created_products: mock) -> None:
     mocked_datetime.date.today.return_value = datetime.date(2022, 1, 1)
     assert outdated_products(created_products) == []
 
-def test_should_return_list_of_names_of_expired_products(mocked_datetime, created_products):
+
+def test_should_return_list_of_names_of_expired_products(
+        mocked_datetime: mock,
+        created_products: mock) -> None:
     mocked_datetime.date.today.return_value = datetime.date(2022, 2, 2)
     assert outdated_products(created_products) == ["duck"]
-
